@@ -26,6 +26,8 @@ db.once('open', function(callback) {
     console.log('Connected to : ' + config.dbHost)
 })
 
+app.use(bodyParser.json());
+
 app.use(bodyParser.urlencoded({
     extended: true
 }))

@@ -33,7 +33,7 @@
                 <span>Unsaved Changes</span><i class="snap-exclamation"></i>
             </div>
 
-            <div id="locked" <%if(snip.lock.lockType==0){%>style="display:none" <% } %>>
+            <div id="locked" <%if(snip.lock.lockType=='none'){%>style="display:none" <% } %>>
                 Read Only
             </div>
         </div>
@@ -123,7 +123,7 @@
     <script src="/js/jquery.min.js"></script>
     <script>
         var url = '<%=snip.url%>';
-        var lockType = <%=snip.lock.lockType%>
+        var lockType = '<%=snip.lock.lockType%>'
         var delid = '<%=snip&&snip.urls&&snip.urls.length || 0 %>';
         var lastUpdate = new Date;
         var changed = false;
@@ -205,7 +205,7 @@
             update(data)
         }
         var update = function(data){
-            if(lockType!=0&&!data.unlockPass)
+            if(lockType!='none'&&!data.unlockPass)
                 return;
             notif.hide();
             saving.show();
@@ -232,7 +232,7 @@
             });
         }
         note.oninput = function(){
-            if(lockType!=0)
+            if(lockType!='none')
                 return;
             if(unsaved.is(':hidden')){
                 notif.hide();

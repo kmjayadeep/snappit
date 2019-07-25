@@ -1,7 +1,7 @@
-var mongoose = require('mongoose')
-var validator = require('mongoose-validator')
+const mongoose = require('mongoose')
+const lockTypes = require('../constants/lockTypes');
 
-var snipSchema = mongoose.Schema({
+const snipSchema = mongoose.Schema({
     url: {
         type: String,
         required: true
@@ -10,8 +10,6 @@ var snipSchema = mongoose.Schema({
     urls: [{
         label: String,
         link: String,
-        _id: false,
-        id: false
     }],
     modified: {
         type: String,
@@ -19,24 +17,29 @@ var snipSchema = mongoose.Schema({
     },
     lock: {
         lockType: {
-            type: Number,
-            default: 0
+            type: String,
+            enum: [
+                lockTypes.TYPE_NONE,
+                lockTypes.TYPE_FULL,
+                lockTypes.TYPE_READONLY
+            ],
+            default: 'none'
         },
         password: String
     }
 })
 
+
 snipSchema.index({
     url: true
-}, {
-    unique: true
-})
+}, { unique: true })
 
-snipSchema.statics.findByUrl = function(url, cb) {
-    this.findOne({
+snipSchema.statics.findByUrl = function(url){
+    return this.findOne({
         url: url
-    }, cb)
+    }).exec();
 }
 
-var snip = mongoose.model('snip', snipSchema)
+const snip = mongoose.model('snip', snipSchema)
+
 module.exports = snip

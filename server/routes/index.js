@@ -2,6 +2,7 @@ var express = require('express')
 var router = express.Router()
 var snipModel = require('../models/snip')
 var md5 = require('MD5')
+const lockTypes = require('../constants/lockTypes');
 
 /**
  * @swagger
@@ -9,93 +10,75 @@ var md5 = require('MD5')
  *      post:
  *          description: save snip to database
  */
-router.post('/save', function(req, res) {
-    var url = req.body.url;
+router.post('/save', async (req, res) => {
+    const url = req.body.url;
     if (!url)
         return res.send({
             code: 1,
             message: 'No url'
-        })
-    console.log(req.body)
-    snipModel.findByUrl(url, function(err, snip) {
-        if (err)
-            return ree.send({
-                code: 2,
-                message: err
-            })
+        });
+    console.log(req.body);
+    try {
+        const { note, urls, lock, unlockPass } = req.body;
+        let snip = await snipModel.findByUrl(url);
         if (!snip) {
-            snip = new snipModel(req.body)
-            snip.modified = new Date
+            snip = new snipModel({
+                url,
+                note,
+                urls: urls ? urls : []
+            });
         } else {
-
-            if (snip.lock && snip.lock.lockType != 0) {
-                if (!req.body.unlockPass)
+            snip.note = note;
+            snip.urls = urls ? urls : [];
+            if (snip.lock && snip.lock.lockType != 'none') {
+                if (!unlockPass)
                     return res.json({
                         code: 4,
                         message: "Cannot Modify: Read only"
                     })
-                if (md5(req.body.unlockPwd) != snip.lock.password)
-                    return res.send({
+                if (md5(unlockPass) != snip.lock.password)
+                    return res.status(401).json({
                         code: 3,
                         message: "Invalid Password"
                     })
             }
-
-            if (req.body.note)
-                snip.note = req.body.note
-            if (req.body.urls)
-                snip.urls = eval(req.body.urls)
-            if (req.body.lock) {
-                snip.lock = eval(req.body.lock)
-                if (snip.lock.lockType != 0)
-                    if (snip.lock.password)
-                        snip.lock.password = md5(snip.lock.password)
-                    else
-                        snip.lock.lockType = 0;
-            }
-            snip.modified = new Date
         }
-
-        if (snip.urls && snip.urls[0] && !snip.urls[0].link)
-            snip.urls = [];
-
-
-        // if (!snip.note && !snip.urls && snip._id) {
-        //     snipModel.remove({
-        //         _id: snip._id
-        //     }, function(err) {
-        //         if (err)
-        //             return res.send({
-        //                 code: 2,
-        //                 message: err
-        //             })
-        //         res.send({
-        //             code: 0,
-        //             message: "Deleted Successfully"
-        //         })
-        //     })
-        // } else
-
-        snip.save(function(err, snip) {
-            if (err)
-                return res.send({
-                    code: 2,
-                    message: err
-                })
-            res.send({
+        if (lock) {
+            snip.lock = lock;
+            if (snip.lock.lockType != lockTypes.TYPE_NONE)
+                if (snip.lock.password)
+                    snip.lock.password = md5(snip.lock.password);
+                else
+                    snip.lock.lockType = lockTypes.TYPE_NONE;
+        }
+        snip.modified = new Date();
+        let saved = await snip.save();
+        if (saved) {
+            return res.json({
                 code: 0,
                 message: "Saved Successfully"
+            });
+        } else {
+            return res.status(400).json({
+                code: 2,
+                message: err
             })
-        })
-    })
+        }
+    } catch (err) {
+        console.error(err);
+        return res.send({
+            code: 2,
+            message: err
+        });
+    }
 });
 
 
 
-router.get('/delete/:url', function(req, res) {
-    snipModel.findByUrl('/' + req.params.url, function(err, snip) {
+router.get('/delete/:url', function (req, res) {
+    snipModel.findByUrl('/' + req.params.url, function (err, snip) {
         if (snip) {
-            snip.remove(function(err) {
+            snip.remove(function (err) {
                 res.redirect('/')
             })
         } else {
@@ -106,34 +89,36 @@ router.get('/delete/:url', function(req, res) {
 
 //only when developing..remove later
 if (express().get('env') == 'development')
-    router.get('/viewall', function(req, res) {
-        snipModel.find({}, function(err, s) {
+    router.get('/viewall', function (req, res) {
+        snipModel.find({}, function (err, s) {
             res.json(s)
         })
     })
 
-router.use(function(req, res, next) {
-    var url = req.url;
-    if (req.method != 'GET')
-        return res.send('Access Denied')
-    snipModel.findByUrl(url, function(err, snip) {
-        if (err)
-            return res.send('Something went wrong')
-        var snip = snip || {
+router.use(async (req, res) => {
+    var url = req.url.slice(1);
+    if (req.method != 'GET') {
+        return res.send('Access Denied');
+    }
+    try {
+        let snip = await snipModel.findByUrl(url);
+        snip = snip || {
             url: url,
             lock: {
-                lockType: 0
+                lockType: 'none'
             }
-        }
+        };
         var baseUrl = req.headers.host
-        url = 'http://' + baseUrl + snip.url
+        url = 'http://' + baseUrl + '/' + snip.url
         res.render('snip', {
             baseUrl: baseUrl,
             isNew: snip == null,
             snip: snip,
-            url: url,
+            url: url
         })
-    })
+    } catch (error) {
+        return res.send('Something went wrong')
+    }
 })
 
 module.exports = router
