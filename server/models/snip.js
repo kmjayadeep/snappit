@@ -11,6 +11,10 @@ const snipSchema = mongoose.Schema({
         label: String,
         link: String,
     }],
+    created: {
+        type: String,
+        required: true
+    },
     modified: {
         type: String,
         required: true
@@ -23,7 +27,7 @@ const snipSchema = mongoose.Schema({
                 lockTypes.TYPE_FULL,
                 lockTypes.TYPE_READONLY
             ],
-            default: 'none'
+            default: lockTypes.TYPE_NONE
         },
         password: String
     }

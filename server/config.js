@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const config = {
+const envConfig = {
     development: {
         dbHost: process.env.MONGO_URL || 'mongodb://localhost/snappit',
         port: process.env.PORT || 3000
@@ -11,4 +11,17 @@ const config = {
         port: process.env.PORT || 3000
     }
 }
-exports.config = config;
+
+const commonConfig = {
+    maxUrlLength: 200
+}
+
+const env = process.env.NODE_ENV || 'development';
+
+var config = envConfig[env];
+
+module.exports = {
+    env,
+    ...commonConfig,
+    ...config
+}
