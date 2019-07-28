@@ -11,7 +11,10 @@ const options = {
       description: 'Documetation for API definitions for snappit',
     },
   },
-  apis: ['server/routes/index.js'],
+  apis: [
+    'server/routes/index.js',
+    'server/routes/api/snip.js'
+  ]
 };
 
 const specs = swaggerJsdoc(options);

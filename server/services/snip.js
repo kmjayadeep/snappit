@@ -6,7 +6,7 @@ var md5 = require('MD5')
 //TODO handle lock
 const findByUrl = async url => {
     try {
-        return await snipModel.findByUrl();
+        return await snipModel.findByUrl(url);
     } catch (error) {
         console.error(error);
         throw "Unable to find snip data";
@@ -52,22 +52,21 @@ const addSnip = async ({ url, note, urls, lock, unlockPass }) => {
 }
 
 const editSnip = async (oldSnip, newSnip) => {
-    const { url, note, urls, lock, unlockPass, unlockPassNew } = newSnip;
+    const { url, note, urls, lock, unlockPassNew } = newSnip;
+    let { unlockPass } = newSnip;
     if (oldSnip.lock && oldSnip.lock.lockType != lockTypes.TYPE_NONE) {
         if (!unlockPass)
             throw "Cannot Modify: Read only";
-        if (hashPassword(unlockPass) != snip.lock.password)
-            throw "Inavlid Password";
+        if (hashPassword(unlockPass) != oldSnip.lock.password)
+            throw "Invalid Password";
     }
-    oldSnip = {
-        ...oldSnip,
-        url,
-        note: note ? note : "",
-        urls: urls ? urls : [],
-        modified: Date.now()
-    };
+    oldSnip.url = url;
+    oldSnip.note = note ? note : "";
+    oldSnip.urls = urls ? urls : [];
+    oldSnip.modified = Date.now();
     //Ability to change password
     unlockPass = unlockPassNew ? unlockPassNew : unlockPass;
+
     if (lock && lock.lockType && unlockPass) {
         oldSnip.lock = {
             lockType: lock.lockType,
@@ -78,6 +77,7 @@ const editSnip = async (oldSnip, newSnip) => {
             lockType: lockTypes.TYPE_NONE
         }
     }
+
     try {
         return await oldSnip.save();
     } catch (error) {
