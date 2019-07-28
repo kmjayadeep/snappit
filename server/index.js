@@ -10,6 +10,7 @@ var routes = require('./routes/index')
 var docs = require('./routes/docs');
 var api = require('./routes/api');
 var app = express()
+const authMiddleware = require('./middlewares/auth');
 var db = mongoose.connection
 
 var config = require('./config');
@@ -37,7 +38,10 @@ app.get('/', function(req, res) {
     res.render('index')
 });
 
+//middleware to parse jwt
+app.use('/api', authMiddleware.authHeader);
 app.use('/api', api);
+
 app.use('/docs', docs);
 app.use('/', routes);
 

@@ -43,12 +43,37 @@ router.get('/:url', async (req, res) => {
  *  /api/snip:
  *      post:
  *          description: save snip to database
+ *      produces:
+ *          - application/json
  */
 router.post('/', async (req, res) => {
     let snip = req.body;
     try {
         snip = await snipService.saveSnip(snip);
         res.json(snip);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+})
+
+/**
+ * @swagger
+ *  /api/snip:
+ *      post:
+ *          description: Authenticate with password to access a locked snip
+ *      produces:
+ *          - application/json
+ */
+router.post('/:url/authenticate', async (req, res) => {
+    const { unlockPass } = req.body;
+    const { url } = req.params;
+    try {
+        const { token, expires } = await snipService.getAuthToken(url, unlockPass);
+        res.json({
+            token,
+            expires
+        })
     } catch (error) {
         console.log(error);
         res.status(500).json(error)

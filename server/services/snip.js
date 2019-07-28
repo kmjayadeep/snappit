@@ -1,7 +1,8 @@
 const snipModel = require('../models/snip');
 const config = require('../config')
 const lockTypes = require('../constants/lockTypes');
-var md5 = require('MD5')
+const hashPassword = require('../utils/password').hashPassword;
+const authMiddleWare = require('../middlewares/auth');
 
 //TODO handle lock
 const findByUrl = async url => {
@@ -109,16 +110,28 @@ const validateUrl = url => {
     return true;
 }
 
+const getAuthToken = async (url, unlockPass) => {
+    const snip = await findByUrl(url);
+    if (hashPassword(unlockPass) === snip.lock.password) {
+        const payload = {
+            passwordHash: snip.lock.password
+        }
+        const { token, expires } = authMiddleWare.signJwt(payload);
+        return { token, expires };
+    } else {
+        throw "Invalid Password";
+    }
+}
+
 const getAllSnips = () => {
     return snipModel.find({}).exec();
 }
-
-const hashPassword = password => md5(password);
 
 module.exports = {
     findByUrl,
     deleteByUrl,
     saveSnip,
     validateUrl,
-    getAllSnips
+    getAllSnips,
+    getAuthToken
 }
