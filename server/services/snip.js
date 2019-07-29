@@ -14,19 +14,19 @@ const findByUrl = async url => {
     }
 }
 
-//TODO handle lock
 const deleteByUrl = async url => {
     try {
         const snip = await snipModel.findByUrl(url);
-        return await snip.remove();
+        if(snip)
+            return await snip.remove();
+        return {};
     } catch (error) {
         console.error(error);
         throw "Unable to delete snip";
     }
 }
 
-// TODO change md5 to sha1
-const addSnip = async ({ url, note, urls, lock, unlockPass }) => {
+const addSnip = async ({ url, note, urls, lock }) => {
     let snip = new snipModel({
         url,
         note: note ? note : "",
@@ -34,10 +34,10 @@ const addSnip = async ({ url, note, urls, lock, unlockPass }) => {
         created: Date.now(),
         modified: Date.now()
     });
-    if (lock && lock.lockType != lockTypes.TYPE_NONE && unlockPass) {
+    if (lock && lock.lockType != lockTypes.TYPE_NONE && lock.password) {
         snip.lock = {
             lockType: snip.lock.lockType,
-            password: hashPassword(unlockPass)
+            password: hashPassword(lock.password)
         }
     } else {
         snip.lock = {
@@ -53,25 +53,15 @@ const addSnip = async ({ url, note, urls, lock, unlockPass }) => {
 }
 
 const editSnip = async (oldSnip, newSnip) => {
-    const { url, note, urls, lock, unlockPassNew } = newSnip;
-    let { unlockPass } = newSnip;
-    if (oldSnip.lock && oldSnip.lock.lockType != lockTypes.TYPE_NONE) {
-        if (!unlockPass)
-            throw "Cannot Modify: Read only";
-        if (hashPassword(unlockPass) != oldSnip.lock.password)
-            throw "Invalid Password";
-    }
+    const { url, note, urls, lock } = newSnip;
     oldSnip.url = url;
     oldSnip.note = note ? note : "";
     oldSnip.urls = urls ? urls : [];
     oldSnip.modified = Date.now();
-    //Ability to change password
-    unlockPass = unlockPassNew ? unlockPassNew : unlockPass;
-
-    if (lock && lock.lockType && unlockPass) {
+    if (lock && lock.lockType && lock.password) {
         oldSnip.lock = {
             lockType: lock.lockType,
-            password: hashPassword(unlockPass)
+            password: hashPassword(lock.password)
         }
     } else {
         oldSnip.lock = {
@@ -112,8 +102,12 @@ const validateUrl = url => {
 
 const getAuthToken = async (url, unlockPass) => {
     const snip = await findByUrl(url);
+    if(snip.lock.lockType == lockTypes.TYPE_NONE){
+        throw "Snip has no lock";
+    }
     if (hashPassword(unlockPass) === snip.lock.password) {
         const payload = {
+            url,
             passwordHash: snip.lock.password
         }
         const { token, expires } = authMiddleWare.signJwt(payload);
