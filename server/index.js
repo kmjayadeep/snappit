@@ -20,7 +20,8 @@ app.use(express.static(path.join(__dirname,'../client/public/')))
 app.use(logger('dev'))
 app.use(helmet())
 
-mongoose.connect(config.dbHost)
+mongoose.set('useCreateIndex', true);
+mongoose.connect(config.dbHost,{ useNewUrlParser: true });
 db.on('error', console.error.bind(console, 'connection error : '))
 db.once('open', function(callback) {
     console.log('Connected to : ' + config.dbHost)
