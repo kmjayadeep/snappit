@@ -8,11 +8,13 @@ var helmet = require('helmet')
 
 var routes = require('./routes/index')
 var docs = require('./routes/docs');
+var api = require('./routes/api');
 var app = express()
+const authMiddleware = require('./middlewares/auth');
 var db = mongoose.connection
 
-var config = require('./config').config[app.get('env')]
-var PORT = config.port || 3000
+var config = require('./config');
+var PORT = config.port
 
 app.set('view engine','ejs')
 app.set('views',path.join(__dirname,'../client/views'))
@@ -36,6 +38,10 @@ app.use(bodyParser.urlencoded({
 app.get('/', function(req, res) {
     res.render('index')
 });
+
+//middleware to parse jwt
+app.use('/api', authMiddleware.authHeader);
+app.use('/api', api);
 
 app.use('/docs', docs);
 app.use('/', routes);

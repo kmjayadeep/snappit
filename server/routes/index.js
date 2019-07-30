@@ -9,6 +9,9 @@ const lockTypes = require('../constants/lockTypes');
  *  /save:
  *      post:
  *          description: save snip to database
+ *          produces:
+ *             - application/json
+ *          responses:
  */
 router.post('/save', async (req, res) => {
     const url = req.body.url;
@@ -72,8 +75,6 @@ router.post('/save', async (req, res) => {
         });
     }
 });
-
-
 
 router.get('/delete/:url', function (req, res) {
     snipModel.findByUrl('/' + req.params.url, function (err, snip) {
