@@ -46,7 +46,7 @@ else {
 
 /**
  * @swagger
- *  /api/snip/:url:
+ *  /api/snip/{url}:
  *      get:
  *          tags:
  *          - snip
@@ -69,7 +69,7 @@ router.get('/:url', async (req, res) => {
     const url = req.params.url;
     try {
         const snip = await snipService.findByUrl(url);
-        if (snip.lock && snip.lock.lockType == lockTypes.TYPE_FULL) {
+        if (snip && snip.lock && snip.lock.lockType == lockTypes.TYPE_FULL) {
             if (req.auth && req.auth.passwordHash == snip.lock.password && req.auth.url == snip.url) {
                 return res.json(snip);
             }
@@ -123,7 +123,7 @@ router.post('/', async (req, res) => {
 
 /**
  * @swagger
- *  /api/snip/:url/authenticate:
+ *  /api/snip/{url}/authenticate:
  *      post:
  *          tags:
  *          - snip
@@ -171,7 +171,7 @@ router.post('/:url/authenticate', async (req, res) => {
 
 /**
  * @swagger
- *  /api/snip/:url:
+ *  /api/snip/{url}:
  *      delete:
  *          tags:
  *          - snip
