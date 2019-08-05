@@ -1,5 +1,6 @@
-var express = require('express')
-var router = express.Router()
+const express = require('express');
+
+const router = express.Router();
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
@@ -13,11 +14,11 @@ const options = {
   },
   apis: [
     'server/routes/index.js',
-    'server/routes/api/snip.js'
-  ]
+    'server/routes/api/snip.js',
+  ],
 };
 
 const specs = swaggerJsdoc(options);
 router.use('/', swaggerUi.serve, swaggerUi.setup(specs));
 
-module.exports = router
+module.exports = router;
