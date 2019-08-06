@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 const mongoose = require('mongoose');
 const lockTypes = require('../constants/lockTypes');
 

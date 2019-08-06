@@ -6,7 +6,7 @@ const authHeader = (req, res, next) => {
   if (token) {
     jwt.verify(token, config.jwtSecret, (err, payload) => {
       if (err) {
-        if (err.name == 'TokenExpiredError') {
+        if (err.name === 'TokenExpiredError') {
           return res.status(401).json({
             message: 'Access token expired',
           });

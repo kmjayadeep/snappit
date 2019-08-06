@@ -44,8 +44,9 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-if (config.env === 'development')
+if (config.env === 'development') {
   app.use('/api', cors());
+}
 // middleware to parse jwt
 app.use('/api', authMiddleware.authHeader);
 app.use('/api', api);

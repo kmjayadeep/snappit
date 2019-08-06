@@ -73,12 +73,11 @@ router.get('/:url', async (req, res) => {
       if (req.auth && req.auth.passwordHash === snip.lock.password && req.auth.url === snip.url) {
         return res.json(snip);
       }
-      res.status(401).json('Unauthorized to view snip');
-    } else {
-      res.json(snip);
+      return res.status(401).json('Unauthorized to view snip');
     }
+    return res.json(snip);
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 });
 
@@ -202,13 +201,12 @@ router.delete('/:url', async (req, res) => {
         const deleted = await snipService.deleteByUrl(url);
         return res.json(deleted);
       }
-      res.status(401).json('Unauthorized to delete snip');
-    } else {
-      const deleted = await snipService.deleteByUrl(url);
-      return res.json(deleted);
+      return res.status(401).json('Unauthorized to delete snip');
     }
+    const deleted = await snipService.deleteByUrl(url);
+    return res.json(deleted);
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 });
 
