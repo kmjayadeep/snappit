@@ -35,7 +35,7 @@ Visit http://localhost:3000 to access the application
 - [ ] Remove dependency on jquery
 - [ ] Complete lock functionality
 - [ ] Enhance UI
-- [ ] Add Licence
+- [x] Add Licence
 - [ ] Make the code ready for production
 - [x] Enhance security using helmet
 
