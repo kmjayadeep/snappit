@@ -5,7 +5,7 @@ const snipService = require('../../services/snip');
 const config = require('../../config');
 const lockTypes = require('../../constants/lockTypes');
 
-if (config.env == 'development') {
+if (config.env === 'development') {
   router.get('/', async (req, res) => {
     const snips = await snipService.getAllSnips();
     res.json(snips);
@@ -35,7 +35,6 @@ if (config.env == 'development') {
  *                type: string
  *             link:
  *                type: string
- *
  *       lock:
  *         type: object
  *         properties:
@@ -70,12 +69,14 @@ router.get('/:url', async (req, res) => {
   const { url } = req.params;
   try {
     const snip = await snipService.findByUrl(url);
-    if (snip && snip.lock && snip.lock.lockType == lockTypes.TYPE_FULL) {
-      if (req.auth && req.auth.passwordHash == snip.lock.password && req.auth.url == snip.url) {
+    if (snip && snip.lock && snip.lock.lockType === lockTypes.TYPE_FULL) {
+      if (req.auth && req.auth.passwordHash === snip.lock.password && req.auth.url === snip.url) {
         return res.json(snip);
       }
       res.status(401).json('Unauthorized to view snip');
-    } else res.json(snip);
+    } else {
+      res.json(snip);
+    }
   } catch (error) {
     res.status(500).json(error);
   }
@@ -107,9 +108,13 @@ router.post('/', async (req, res) => {
   const { body: snip, auth } = req;
   try {
     const oldSnip = await snipService.findByUrl(snip.url);
-    if (oldSnip && oldSnip.lock && oldSnip.lock.lockType != lockTypes.TYPE_NONE) {
-      if (!auth) return res.status(401).json('Auth header missing');
-      if (auth.url != snip.url || auth.passwordHash != oldSnip.lock.password) return res.status(401).json('Not authorized');
+    if (oldSnip && oldSnip.lock && oldSnip.lock.lockType !== lockTypes.TYPE_NONE) {
+      if (!auth) {
+        return res.status(401).json('Auth header missing');
+      }
+      if (auth.url !== snip.url || auth.passwordHash !== oldSnip.lock.password) {
+        return res.status(401).json('Not authorized');
+      }
     }
     const saved = await snipService.saveSnip(snip);
     res.json(saved);
@@ -192,8 +197,8 @@ router.delete('/:url', async (req, res) => {
   const { url } = req.params;
   try {
     const snip = await snipService.findByUrl(url);
-    if (snip && snip.lock && snip.lock.lockType == lockTypes.TYPE_FULL) {
-      if (req.auth && req.auth.passwordHash == snip.lock.password && req.auth.url == snip.url) {
+    if (snip && snip.lock && snip.lock.lockType === lockTypes.TYPE_FULL) {
+      if (req.auth && req.auth.passwordHash === snip.lock.password && req.auth.url === snip.url) {
         const deleted = await snipService.deleteByUrl(url);
         return res.json(deleted);
       }
