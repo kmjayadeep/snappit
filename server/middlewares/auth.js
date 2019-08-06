@@ -16,17 +16,19 @@ const authHeader = (req, res, next) => {
         });
       }
       req.auth = payload;
+      return next();
     });
+  } else {
+    next();
   }
-  next();
 };
 
 const signJwt = (payload) => {
   const token = jwt.sign(payload, config.jwtSecret, {
     expiresIn: config.jwtExpiresIn,
   });
-  payload = jwt.verify(token, config.jwtSecret);
-  const expires = payload.exp * 1000; // convert to millis
+  const payloadData = jwt.verify(token, config.jwtSecret);
+  const expires = payloadData.exp * 1000; // convert to millis
   return { token, expires };
 };
 

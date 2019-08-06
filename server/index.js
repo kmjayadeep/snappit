@@ -27,8 +27,9 @@ app.use(helmet());
 
 mongoose.set('useCreateIndex', true);
 mongoose.connect(config.dbHost, { useNewUrlParser: true });
-db.on('error', console.error.bind(console, 'connection error : '));
-db.once('open', (callback) => {
+const errorLog = console.error.bind(console, 'connection error : ');
+db.on('error', errorLog);
+db.once('open', () => {
   console.log(`Connected to : ${config.dbHost}`);
 });
 
@@ -49,6 +50,6 @@ app.use('/api', api);
 app.use('/docs', docs);
 app.use('/', routes);
 
-app.listen(PORT, (err) => {
+app.listen(PORT, () => {
   console.log(`Listening to port : ${PORT}`);
 });
