@@ -30,14 +30,14 @@ mongoose.connect(config.dbHost, { useNewUrlParser: true });
 const errorLog = console.error.bind(console, 'connection error : ');
 db.on('error', errorLog);
 db.once('open', () => {
-  console.log('Connected to : ' + config.dbHost);
-})
+  console.log(`Connected to : ${config.dbHost}`);
+});
 
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({
   extended: true,
-}))
+}));
 
 app.get('/', (req, res) => {
   res.render('index');
@@ -51,5 +51,5 @@ app.use('/docs', docs);
 app.use('/', routes);
 
 app.listen(PORT, () => {
-  console.log('Listening to port : ' + PORT);
+  console.log(`Listening to port : ${PORT}`);
 });
