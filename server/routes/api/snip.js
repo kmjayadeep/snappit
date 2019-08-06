@@ -117,10 +117,10 @@ router.post('/', async (req, res) => {
       }
     }
     const saved = await snipService.saveSnip(snip);
-    res.json(saved);
+    return res.json(saved);
   } catch (error) {
     console.log(error);
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 });
 

@@ -16,9 +16,11 @@ const authHeader = (req, res, next) => {
         });
       }
       req.auth = payload;
+      return next();
     });
+  } else {
+    next();
   }
-  next();
 };
 
 const signJwt = (payload) => {
