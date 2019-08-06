@@ -1,5 +1,7 @@
 # Snappit - Simple note sharing platform
 
+[![Build Status](https://travis-ci.org/kmjayadeep/snappit.svg?branch=dev)](https://travis-ci.org/kmjayadeep/snappit)
+
 ## Development Setup
 
 ### Using Docker-compose
