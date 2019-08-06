@@ -2,6 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const path = require('path');
 const logger = require('morgan');
 const helmet = require('helmet');
@@ -43,6 +44,8 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+if (config.env === 'development')
+  app.use('/api', cors());
 // middleware to parse jwt
 app.use('/api', authMiddleware.authHeader);
 app.use('/api', api);
