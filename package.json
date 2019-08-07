@@ -6,6 +6,10 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
+    "start:client": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
+    "build:client": "preact build --src preact_client/src",
+    "serve:client": "preact build --src preact_client/src && preact serve",
+    "dev:client": "preact watch --src preact_client/src",
     "lint": "eslint ."
   },
   "repository": {
@@ -29,13 +33,20 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.6.5",
     "morgan": "^1.5.3",
+    "preact": "^8.2.1",
+    "preact-compat": "^3.17.0",
+    "preact-render-to-string": "^4.1.0",
+    "preact-router": "^2.6.1",
     "swagger-jsdoc": "^3.3.0",
     "swagger-ui-express": "^4.0.7"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-config-synacor": "^1.1.0",
     "eslint-plugin-import": "^2.18.2",
-    "nodemon": "^1.19.1"
+    "if-env": "^1.0.0",
+    "nodemon": "^1.19.1",
+    "preact-cli": "^2.0.0"
   }
 }

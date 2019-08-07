@@ -1,0 +1,9 @@
+html, body {
+	font: 14px/1.21 'Helvetica Neue', arial, sans-serif;
+	height: 100%;
+	margin: 0;
+}
+
+input, textarea {
+  outline: none;
+}

@@ -1,0 +1,21 @@
+.url__base {
+  border: none;
+  padding: 8px 0;
+  font-size: 22pt;
+}
+
+.url__snip {
+  border-bottom: 2px solid #ddd;
+  min-width: 350px;
+}
+
+.url__snip:focus {
+  border-bottom-color: red;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
