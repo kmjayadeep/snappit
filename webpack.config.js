@@ -2,7 +2,7 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './client/src/index.js',
+  entry: './client/index.js',
   output: {
     path: path.join(__dirname, 'public'),
     filename: 'app.js',
@@ -21,7 +21,7 @@ module.exports = {
   },
   plugins: [
     new CopyPlugin([
-      { from: './client/src/assets', to: 'assets' },
+      { from: './client/assets', to: 'assets' },
     ]),
   ],
 };

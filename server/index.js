@@ -1,7 +1,8 @@
 import { h } from 'preact';
-import Routes from '../client/src/routes';
+import { Router } from 'preact-router';
+import App from '../common/src/App';
 import { Provider } from 'unistore/preact';
-import createStore from '../client/src/store/store';
+import createStore from '../common/src/store/store';
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -71,10 +72,11 @@ app.use('/docs', docs);
 app.get('**', (req, res) => {
   const store = createStore({});
   const state = store.getState();
+  const url = req.url.slice(1);
 
   const html = render(
     <Provider store={store}>
-      <Routes />
+      <App url={url}/>
     </Provider>
   );
 
