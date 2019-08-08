@@ -1,0 +1,16 @@
+{
+  "plugins": [
+    ["transform-react-jsx", {
+      "pragma": "h"
+    }],
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-proposal-class-properties",
+    "css-modules-transform"
+  ],
+  "presets": [
+    "@babel/preset-env"
+  ],
+  "ignore": [
+    "node_modules",
+  ]
+}

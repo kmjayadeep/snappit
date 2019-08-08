@@ -1,3 +1,7 @@
+import { h } from 'preact';
+import Routes from '../client/src/routes';
+import { Provider } from 'unistore/preact';
+import createStore from '../client/src/store/store';
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -7,7 +11,7 @@ const path = require('path');
 const logger = require('morgan');
 const helmet = require('helmet');
 
-const routes = require('./routes/index');
+const render = require('preact-render-to-string');
 const docs = require('./routes/docs');
 const api = require('./routes/api');
 
@@ -20,9 +24,6 @@ const config = require('./config');
 
 const PORT = config.port;
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '../client/views'));
-app.use(express.static(path.join(__dirname, '../client/public/')));
 app.use(logger('dev'));
 app.use(helmet());
 
@@ -40,9 +41,22 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 
-app.get('/', (req, res) => {
-  res.render('index');
-});
+const HTMLShell = (html, state) => `
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title> Snappit </title>
+        </head>
+        <body>
+            <div id="app">${html}</div>
+            <script>window.__STATE__=${JSON.stringify(state).replace(/<|>/g, '')}</script>
+            <script src="./app.js"></script>
+        </body>
+    </html>`;
+
+app.use(express.static(path.join(__dirname, '../public')));
 
 if (config.env === 'development') {
   app.use('/api', cors());
@@ -52,7 +66,19 @@ app.use('/api', authMiddleware.authHeader);
 app.use('/api', api);
 
 app.use('/docs', docs);
-app.use('/', routes);
+
+app.get('**', (req, res) => {
+  const store = createStore({});
+  const state = store.getState();
+
+  const html = render(
+    <Provider store={store}>
+      <Routes />
+    </Provider>
+  );
+
+  res.send(HTMLShell(html, state));
+});
 
 app.listen(PORT, () => {
   console.log(`Listening to port : ${PORT}`);

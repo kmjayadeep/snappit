@@ -1,3 +1,5 @@
+import { h } from 'preact';
+
 import { Component } from 'preact';
 import { Router } from 'preact-router';
 import { Snip } from './snip/';

@@ -1,5 +1,6 @@
+import { h } from 'preact';
 import { Component } from 'preact';
-import style from './style';
+import style from './style.css';
 
 export class Note extends Component {
   handleChange = e => {

@@ -1,6 +1,8 @@
+import { h } from 'preact';
+
 import { Component } from 'preact';
 import { Note } from '../note';
-import style from './style';
+import style from './style.css';
 
 export class Snip extends Component {
   componentDidMount() {
