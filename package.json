@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
-    "start:client": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
+    "start:client": "webpack -w",
     "start:server": "nodemon --exec babel-node server/index.js",
     "build:client": "preact build --src preact_client/src",
     "serve:client": "preact build --src preact_client/src && preact serve",
@@ -26,6 +26,7 @@
   "dependencies": {
     "MD5": "^1.2.2",
     "body-parser": "^1.19.0",
+    "copy-webpack-plugin": "^5.0.4",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "ejs": "^2.3.1",

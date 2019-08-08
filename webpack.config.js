@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './client/src/index.js',
@@ -17,4 +18,9 @@ module.exports = {
       use: ['style-loader', 'css-loader'],
     }],
   },
+  plugins: [
+    new CopyPlugin([
+      { from: './client/src/assets', to: 'assets' },
+    ]),
+  ],
 };

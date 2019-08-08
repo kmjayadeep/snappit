@@ -45,6 +45,7 @@ const HTMLShell = (html, state) => `
     <!DOCTYPE html>
     <html>
         <head>
+          <link rel="shortcut icon" type="image/png" href="/assets/favicon.ico"/>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title> Snappit </title>
