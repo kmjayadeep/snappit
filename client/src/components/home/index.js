@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 import { Component } from 'preact';
 import { route } from 'preact-router';
-import style from './style.css';
+import './style.css';
 
 export class Home extends Component {
 	state = {
@@ -27,13 +27,13 @@ export class Home extends Component {
     //TODO replace with unistore
     let { protocol, host } =  {protocol: 'https',host:'localhost:3000'}
 		return (
-			<form class={style.container} onSubmit={this.handleSubmit}>
-        <span class={style.url__base}>
+			<form class="container" onSubmit={this.handleSubmit}>
+        <span class="url__base">
           {protocol}//{host}/
         </span>
         <input
           autoFocus
-          class={`${style.url__base} ${style.url__snip}`}
+          class="url__base url__snip"
           type="text"
           placeholder="Enter_Your_Snip_URL_Here"
           value={this.state.url}

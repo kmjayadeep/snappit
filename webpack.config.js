@@ -9,14 +9,15 @@ module.exports = {
   },
   mode: 'development',
   module: {
-    rules: [{
-      test: /\.js$/,
-      loader: 'babel-loader',
-    },
-    {
-      test: /\.css$/,
-      use: ['style-loader', 'css-loader'],
-    }],
+    rules: [
+      {
+        test: /\.css$/,
+        loader: 'style-loader!css-loader',
+      }, {
+        test: /\.js$/,
+        loader: 'babel-loader',
+      },
+    ],
   },
   plugins: [
     new CopyPlugin([

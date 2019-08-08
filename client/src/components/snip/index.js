@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 import { Component } from 'preact';
 import { Note } from '../note';
-import style from './style.css';
+import './style.css';
 
 export class Snip extends Component {
   componentDidMount() {
@@ -16,7 +16,7 @@ export class Snip extends Component {
   }
 	render({url}, {snip}) {
 		return (
-			<div class={style.container}>
+			<div class="container">
         <Note note={snip ? snip.note : ''} url={url} />
 			</div>
 		);

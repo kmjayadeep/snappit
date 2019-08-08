@@ -2,8 +2,6 @@ import { h, render } from 'preact';
 import { Provider } from 'unistore/preact';
 import Routes from './routes';
 
-import './style/style.css';
-
 import createStore from './store/store';
 
 const store = createStore(window.__STATE__);

@@ -44,17 +44,17 @@ app.use(bodyParser.urlencoded({
 const HTMLShell = (html, state) => `
     <!DOCTYPE html>
     <html>
-        <head>
-          <link rel="shortcut icon" type="image/png" href="/assets/favicon.ico"/>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title> Snappit </title>
-        </head>
-        <body>
-            <div id="app">${html}</div>
-            <script>window.__STATE__=${JSON.stringify(state).replace(/<|>/g, '')}</script>
-            <script src="./app.js"></script>
-        </body>
+      <head>
+        <link rel="shortcut icon" type="image/png" href="/assets/favicon.ico"/>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title> Snappit </title>
+      </head>
+      <body>
+        <div id="app">${html}</div>
+        <script>window.__STATE__=${JSON.stringify(state).replace(/<|>/g, '')}</script>
+        <script src="./app.js"></script>
+      </body>
     </html>`;
 
 app.use(express.static(path.join(__dirname, '../public')));

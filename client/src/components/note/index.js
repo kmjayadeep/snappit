@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { Component } from 'preact';
-import style from './style.css';
+import './style.css';
 
 export class Note extends Component {
   handleChange = e => {
@@ -24,7 +24,7 @@ export class Note extends Component {
       <textarea
         autoFocus
         placeholder="You can type here..."
-        class={style.note}
+        class="note"
         value={this.props.note}
         onChange={this.handleChange}
       ></textarea>
