@@ -7,7 +7,7 @@ import './style.css';
 export class Snip extends Component {
   componentDidMount() {
     console.log(this.props.url);
-    fetch(`http://localhost:3000/api/snip/${this.props.url}`).then(res => res.json())
+    fetch(`/api/snip/${this.props.url}`).then(res => res.json())
     .then(res => {
       this.setState({
         snip: res

@@ -8,7 +8,7 @@ export class Note extends Component {
       'url': this.props.url,
       'note': e.target.value,
     }
-    fetch('http://localhost:3000/api/snip', {
+    fetch('/api/snip', {
       'method': 'POST',
       'headers': {
         'Content-Type': 'application/json'
