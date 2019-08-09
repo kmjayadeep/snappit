@@ -1,7 +1,6 @@
 import { h } from 'preact';
-import { Router } from 'preact-router';
-import App from '../common/src/App';
 import { Provider } from 'unistore/preact';
+import App from '../common/src/App';
 import createStore from '../common/src/store/store';
 
 const express = require('express');
@@ -53,7 +52,7 @@ const HTMLShell = (html, state) => `
       </head>
       <body>
         <div id="app">${html}</div>
-        <script>window.__STATE__=${JSON.stringify(state).replace(/<|>/g, '')}</script>
+        <script>window.INITIAL_STATE=${JSON.stringify(state).replace(/<|>/g, '')}</script>
         <script src="./app.js"></script>
       </body>
     </html>`;
@@ -76,8 +75,8 @@ app.get('**', (req, res) => {
 
   const html = render(
     <Provider store={store}>
-      <App url={url}/>
-    </Provider>
+      <App url={url} />
+    </Provider>,
   );
 
   res.send(HTMLShell(html, state));

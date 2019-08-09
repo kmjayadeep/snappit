@@ -5,7 +5,8 @@
     "es6": true
   },
   "extends": [
-    "airbnb-base"
+    "airbnb-base",
+    "standard-preact"
   ],
   "globals": {
     "Atomics": "readonly",
@@ -16,6 +17,7 @@
   },
   "rules": {
     "linebreak-style": 0,
-    "no-console": 0
+    "no-console": 0,
+    "class-methods-use-this": 0
   }
 }
