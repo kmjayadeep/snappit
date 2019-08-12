@@ -1,7 +1,7 @@
 const SnipModel = require('../models/snip');
 const config = require('../config');
 const lockTypes = require('../constants/lockTypes');
-const { hashPassword } = require('../utils/password');
+const { hashPassword, verifyPassword } = require('../utils/password');
 const authMiddleWare = require('../middlewares/auth');
 
 const validateUrl = (url) => {
@@ -46,9 +46,11 @@ const addSnip = async ({
     modified: Date.now(),
   });
   if (lock && lock.lockType !== lockTypes.TYPE_NONE && lock.password) {
+    const { passwordHash, passwordSalt } = hashPassword(lock.password);
     snip.lock = {
       lockType: snip.lock.lockType,
-      password: hashPassword(lock.password),
+      passwordHash,
+      passwordSalt,
     };
   } else {
     snip.lock = {
@@ -72,10 +74,13 @@ const editSnip = async (oldSnip, newSnip) => {
   snipData.note = note || '';
   snipData.urls = urls || [];
   snipData.modified = Date.now();
+
   if (lock && lock.lockType && lock.password) {
+    const { passwordHash, passwordSalt } = hashPassword(lock.password);
     snipData.lock = {
       lockType: lock.lockType,
-      password: hashPassword(lock.password),
+      passwordHash,
+      passwordSalt,
     };
   } else {
     snipData.lock = {
@@ -100,12 +105,13 @@ const saveSnip = async (snip) => {
   return editSnip(existing, snip);
 };
 
-const getAuthToken = async (url, unlockPass) => {
+const getAuthToken = async (url, password) => {
   const snip = await findByUrl(url);
   if (snip.lock.lockType === lockTypes.TYPE_NONE) {
     throw new Error('Snip has no lock');
   }
-  if (hashPassword(unlockPass) === snip.lock.password) {
+  const { salt } = snip.lock;
+  if (verifyPassword(password, snip.lock.password, salt)) {
     const payload = {
       url,
       passwordHash: snip.lock.password,
