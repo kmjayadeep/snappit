@@ -30,7 +30,8 @@ const snipSchema = mongoose.Schema({
       ],
       default: lockTypes.TYPE_NONE,
     },
-    password: String,
+    passwordHash: String,
+    passwordSalt: String,
   },
 });
 
