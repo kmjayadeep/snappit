@@ -59,6 +59,7 @@
     "eslint-plugin-import": "^2.18.2",
     "file-loader": "^4.1.0",
     "if-env": "^1.0.0",
+    "mini-css-extract-plugin": "^0.8.0",
     "nodemon": "^1.19.1",
     "style-loader": "^1.0.0",
     "webpack": "^4.39.1",
