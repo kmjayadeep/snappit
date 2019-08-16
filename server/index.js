@@ -6,7 +6,6 @@ import createStore from '../common/src/store/store';
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const path = require('path');
 const logger = require('morgan');
 const helmet = require('helmet');
@@ -46,6 +45,7 @@ const HTMLShell = (html, state) => `
     <html>
       <head>
         <link rel="shortcut icon" type="image/png" href="/assets/favicon.ico"/>
+        <link rel="stylesheet" href="/main.css"/>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title> Snappit </title>
@@ -59,9 +59,6 @@ const HTMLShell = (html, state) => `
 
 app.use(express.static(path.join(__dirname, '../public')));
 
-if (config.env === 'development') {
-  app.use('/api', cors());
-}
 // middleware to parse jwt
 app.use('/api', authMiddleware.authHeader);
 app.use('/api', api);

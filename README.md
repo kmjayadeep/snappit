@@ -17,28 +17,33 @@ Now, visit http://localhost:3000
 Prerequisites:
 - mongodb
 - nodejs
-- nodemon (OPTIONAL: For development)
+
+Run
 
 ```bash
 npm install
+```
+
+#### Run in production mode
+
+```
 npm start
 ```
 
-or
+#### Run in development mode
 
 ```bash
-npm install
-npm run dev #For running dev server
+npm run dev
 ```
 
 Visit http://localhost:3000 to access the application
 
 ## TODO
-- [ ] Remove dependency on jquery
+- [x] Remove dependency on jquery
 - [ ] Complete lock functionality
 - [ ] Enhance UI
 - [x] Add Licence
-- [ ] Make the code ready for production
+- [x] Make the code ready for production
 - [x] Enhance security using helmet
 
 
