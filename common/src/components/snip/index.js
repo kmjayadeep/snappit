@@ -1,25 +1,33 @@
 import { h, Component } from 'preact';
+import { connect } from 'unistore/preact';
 
-
+import { actions } from '../../store/store';
+import NoteService from '../../services';
 import Note from '../note';
 import './style.css';
 
-export default class Snip extends Component {
+class Snip extends Component {
   componentDidMount() {
-    console.log(this.props.url);
-    fetch(`/api/snip/${this.props.url}`).then(res => res.json())
-      .then((res) => {
-        this.setState({
-          snip: res,
-        });
-      });
+    NoteService.get(this.props.url)
+      .then(res => this.props.setNote(res));
   }
 
-  render({ url }, { snip }) {
+  handleChange = (e) => {
+    const data = {
+      url: this.props.url,
+      note: e.target.value,
+    };
+    NoteService.save(data)
+      .then(res => this.props.setNote(res));
+  }
+
+  render({ snip }) {
     return (
       <div class='container'>
-        <Note note={snip ? snip.note : ''} url={url} />
+        <Note handleChange={this.handleChange} note={snip ? snip.note : ''} />
       </div>
     );
   }
 }
+
+export default connect('snip', actions)(Snip);
