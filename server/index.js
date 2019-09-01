@@ -13,6 +13,7 @@ const helmet = require('helmet');
 const render = require('preact-render-to-string');
 const docs = require('./routes/docs');
 const api = require('./routes/api');
+const snipService = require('./services/snip');
 
 const app = express();
 const authMiddleware = require('./middlewares/auth');
@@ -65,10 +66,13 @@ app.use('/api', api);
 
 app.use('/docs', docs);
 
-app.get('**', (req, res) => {
-  const store = createStore({});
+// TODO handle lock
+app.get('**', async (req, res) => {
+  const url = req.path.slice(1);
+  const snip = await snipService.findByUrl(url);
+
+  const store = createStore({ snip });
   const state = store.getState();
-  const url = req.url.slice(1);
 
   const html = render(
     <Provider store={store}>
