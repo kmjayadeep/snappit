@@ -4,6 +4,7 @@ import { connect } from 'unistore/preact';
 import { actions } from '../../store/store';
 import NoteService from '../../services';
 import Note from '../note';
+import StatusBar from '../StatusBar';
 import './style.css';
 
 class Snip extends Component {
@@ -19,17 +20,25 @@ class Snip extends Component {
       url: this.props.url,
       note: e.target.value,
     };
+    this.props.setNote(data);
+    this.props.updateStatus('syncing');
     NoteService.save(data)
-      .then(res => this.props.setNote(res));
+      .then(() => {
+        this.props.updateStatus('saved');
+        setTimeout(() => this.props.updateStatus(''), 5000);
+      }).catch(() => {
+        this.props.updateStatus('error_saving');
+      });
   }
 
-  render({ snip }) {
+  render({ snip, status }) {
     return (
       <div class='container'>
+        <StatusBar status={status} />
         <Note handleChange={this.handleChange} note={snip ? snip.note : ''} />
       </div>
     );
   }
 }
 
-export default connect('snip', actions)(Snip);
+export default connect('snip, status', actions)(Snip);

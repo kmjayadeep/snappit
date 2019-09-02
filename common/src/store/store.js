@@ -7,6 +7,11 @@ export const actions = () => ({
       snip,
     };
   },
+  updateStatus(state, status) {
+    return {
+      ...state,
+      status,
+    };
+  },
 });
-
 export default initialState => createStore(initialState);
