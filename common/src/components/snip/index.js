@@ -8,8 +8,10 @@ import './style.css';
 
 class Snip extends Component {
   componentDidMount() {
-    NoteService.get(this.props.url)
-      .then(res => this.props.setNote(res));
+    if (!this.props.snip) {
+      NoteService.get(this.props.url)
+        .then(res => this.props.setNote(res));
+    }
   }
 
   handleChange = (e) => {
