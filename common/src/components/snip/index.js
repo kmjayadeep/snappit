@@ -16,19 +16,23 @@ class Snip extends Component {
   }
 
   handleChange = (e) => {
-    const data = {
-      url: this.props.url,
-      note: e.target.value,
-    };
-    this.props.setNote(data);
-    this.props.updateStatus('syncing');
-    NoteService.save(data)
-      .then(() => {
-        this.props.updateStatus('saved');
-        setTimeout(() => this.props.updateStatus(''), 5000);
-      }).catch(() => {
-        this.props.updateStatus('error_saving');
-      });
+    if (this.saveTimeout) clearTimeout(this.saveTimeout);
+    this.saveTimeout = setTimeout(() => {
+      const data = {
+        url: this.props.url,
+        note: e.target.value,
+      };
+      this.props.setNote(data);
+      this.props.updateStatus('syncing');
+      NoteService.save(data)
+        .then(() => {
+          this.props.updateStatus('saved');
+          if (this.statusUpdateTimeout) clearTimeout(this.statusUpdateTimeout);
+          this.statusUpdateTimeout = setTimeout(() => this.props.updateStatus(''), 5000);
+        }).catch(() => {
+          this.props.updateStatus('error_saving');
+        });
+    }, 1000);
   }
 
   render({ snip, status }) {

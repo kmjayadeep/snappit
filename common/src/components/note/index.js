@@ -8,7 +8,7 @@ const Note = ({ note, handleChange }) => (
     placeholder='You can type here...'
     class='note'
     value={note}
-    onChange={handleChange}
+    onInput={handleChange}
    />
 );
 
