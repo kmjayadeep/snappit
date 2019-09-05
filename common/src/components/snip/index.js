@@ -27,7 +27,8 @@ class Snip extends Component {
       NoteService.save(data)
         .then(() => {
           this.props.updateStatus('saved');
-          setTimeout(() => this.props.updateStatus(''), 5000);
+          if (this.statusUpdateTimeout) clearTimeout(this.statusUpdateTimeout);
+          this.statusUpdateTimeout = setTimeout(() => this.props.updateStatus(''), 5000);
         }).catch(() => {
           this.props.updateStatus('error_saving');
         });
